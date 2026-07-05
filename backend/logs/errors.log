@@ -1,0 +1,387 @@
+2026-07-04 17:30:22.206 | ERROR    | app.main:unhandled_exception_handler:57 - Unhandled error on GET /documents: (sqlite3.OperationalError) no such table: documents
+[SQL: SELECT documents.id, documents.filename, documents.original_filename, documents.content_type, documents.file_path, documents.size_bytes, documents.page_count, documents.chunk_count, documents.status, documents.error_message, documents.preview_text, documents.created_at, documents.updated_at 
+FROM documents ORDER BY documents.created_at DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    │    │       └ <function DefaultDialect.do_execute at 0x7fc502c65760>
+    │    └ <sqlalchemy.dialects.sqlite.aiosqlite.SQLiteDialect_aiosqlite object at 0x7fc5028d4380>
+    └ <sqlalchemy.engine.base.Connection object at 0x7fc4edc7e840>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+    │      │       │          └ ()
+    │      │       └ 'SELECT documents.id, documents.filename, documents.original_filename, documents.content_type, documents.file_path, documents...
+    │      └ <function AsyncAdapt_aiosqlite_cursor.execute at 0x7fc50271d080>
+    └ <sqlalchemy.dialects.sqlite.aiosqlite.AsyncAdapt_aiosqlite_cursor object at 0x7fc4edc1fe20>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 147, in execute
+    self._adapt_connection._handle_exception(error)
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_aiosqlite_cursor' objects>
+    └ <sqlalchemy.dialects.sqlite.aiosqlite.AsyncAdapt_aiosqlite_cursor object at 0x7fc4edc1fe20>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 298, in _handle_exception
+    raise error
+          └ OperationalError('no such table: documents')
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 129, in execute
+    self.await_(_cursor.execute(operation, parameters))
+    │    │      │       │       │          └ ()
+    │    │      │       │       └ 'SELECT documents.id, documents.filename, documents.original_filename, documents.content_type, documents.file_path, documents...
+    │    │      │       └ <function Cursor.execute at 0x7fc5027327a0>
+    │    │      └ <aiosqlite.cursor.Cursor object at 0x7fc4edee2030>
+    │    └ <member 'await_' of 'AsyncAdapt_aiosqlite_cursor' objects>
+    └ <sqlalchemy.dialects.sqlite.aiosqlite.AsyncAdapt_aiosqlite_cursor object at 0x7fc4edc1fe20>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <coroutine object Cursor.execute at 0x7fc4edcc3d80>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x7fc4edc4dd40 (otid=0x7fc4edc7e5b0) dead>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <coroutine object Cursor.execute at 0x7fc4edcc3d80>
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/cursor.py", line 48, in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+          │    │        │    │       │        │    └ ()
+          │    │        │    │       │        └ 'SELECT documents.id, documents.filename, documents.original_filename, documents.content_type, documents.file_path, documents...
+          │    │        │    │       └ <method 'execute' of 'sqlite3.Cursor' objects>
+          │    │        │    └ <sqlite3.Cursor object at 0x7fc4edc942c0>
+          │    │        └ <aiosqlite.cursor.Cursor object at 0x7fc4edee2030>
+          │    └ <function Cursor._execute at 0x7fc502732700>
+          └ <aiosqlite.cursor.Cursor object at 0x7fc4edee2030>
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/cursor.py", line 40, in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+                 │    │     │        │    │       └ {}
+                 │    │     │        │    └ ('SELECT documents.id, documents.filename, documents.original_filename, documents.content_type, documents.file_path, document...
+                 │    │     │        └ <built-in method execute of sqlite3.Cursor object at 0x7fc4edc942c0>
+                 │    │     └ <function Connection._execute at 0x7fc5027339c0>
+                 │    └ <Connection(Thread-4, stopped daemon 140483799021248)>
+                 └ <aiosqlite.cursor.Cursor object at 0x7fc4edee2030>
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/core.py", line 132, in _execute
+    return await future
+                 └ <Future finished exception=OperationalError('no such table: documents')>
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/core.py", line 115, in run
+    result = function()
+             └ functools.partial(<built-in method close of sqlite3.Connection object at 0x7fc4eddfbd30>)
+
+sqlite3.OperationalError: no such table: documents
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.12/threading.py", line 1030, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x7fc505338720>
+    └ <Thread(asyncio-portal-7fc4edc7dc70, started daemon 140483790628544)>
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x7fc505338400>
+    └ <Thread(asyncio-portal-7fc4edc7dc70, started daemon 140483790628544)>
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(asyncio-portal-7fc4edc7dc70, started daemon 140483790628544)>
+    │    │        │    └ ()
+    │    │        └ <Thread(asyncio-portal-7fc4edc7dc70, started daemon 140483790628544)>
+    │    └ <function start_blocking_portal.<locals>.run_blocking_portal at 0x7fc4edddfe20>
+    └ <Thread(asyncio-portal-7fc4edc7dc70, started daemon 140483790628544)>
+  File "/usr/local/lib/python3.12/dist-packages/anyio/from_thread.py", line 536, in run_blocking_portal
+    run_eventloop(
+    └ <function run at 0x7fc5052fd300>
+  File "/usr/local/lib/python3.12/dist-packages/anyio/_core/_eventloop.py", line 83, in run
+    return async_backend.run(func, args, {}, backend_options)
+           │             │   │     │         └ {}
+           │             │   │     └ ()
+           │             │   └ <function start_blocking_portal.<locals>.run_portal at 0x7fc4edddc720>
+           │             └ <classmethod(<function AsyncIOBackend.run at 0x7fc4edc30860>)>
+           └ <class 'anyio._backends._asyncio.AsyncIOBackend'>
+  File "/usr/local/lib/python3.12/dist-packages/anyio/_backends/_asyncio.py", line 2436, in run
+    return runner.run(wrapper())
+           │      │   └ <function start_blocking_portal.<locals>.run_portal at 0x7fc4edc328e0>
+           │      └ <function Runner.run at 0x7fc504988360>
+           └ <asyncio.runners.Runner object at 0x7fc4eddd5670>
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='anyio.from_thread.start_blocking_portal.<locals>.run_portal' coro=<start_blocking_portal.<locals>.run_por...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x7fc50497df80>
+           │    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7fc4eddd5670>
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x7fc50497dee0>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x7fc50497fce0>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 1987, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x7fc504928040>
+    └ <Handle Task.task_wakeup(<Future finished result=None>)>
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finished result=None>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finished result=None>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finished result=None>)>
+  File "/usr/local/lib/python3.12/dist-packages/anyio/_core/_tasks.py", line 278, in _run_coro
+    retval = await self._coro
+                   │    └ <member '_coro' of 'TaskHandle' objects>
+                   └ <TaskHandle pending name='anyio.from_thread.BlockingPortal._call_func' coro=<coroutine object BlockingPortal._call_func at 0x...
+  File "/usr/local/lib/python3.12/dist-packages/anyio/from_thread.py", line 263, in _call_func
+    retval = await retval_or_awaitable
+                   └ <coroutine object FastAPI.__call__ at 0x7fc4eddf8e50>
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+                           │      │        └ <function _TestClientTransport.handle_request.<locals>.send at 0x7fc4edddc680>
+                           │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+                           └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+  File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+          │    │                │      │        └ <function _TestClientTransport.handle_request.<locals>.send at 0x7fc4edddc680>
+          │    │                │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │    │                └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          │    └ <starlette.middleware.errors.ServerErrorMiddleware object at 0x7fc4eddf3620>
+          └ <fastapi.applications.FastAPI object at 0x7fc4fc19fbc0>
+> File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+          │    │   │      │        └ <function ServerErrorMiddleware.__call__.<locals>._send at 0x7fc4edc32e80>
+          │    │   │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │    │   └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          │    └ <starlette.middleware.cors.CORSMiddleware object at 0x7fc4eddd4800>
+          └ <starlette.middleware.errors.ServerErrorMiddleware object at 0x7fc4eddf3620>
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+          │    │   │      │        └ <function ServerErrorMiddleware.__call__.<locals>._send at 0x7fc4edc32e80>
+          │    │   │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │    │   └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          │    └ <starlette.middleware.exceptions.ExceptionMiddleware object at 0x7fc4edd57620>
+          └ <starlette.middleware.cors.CORSMiddleware object at 0x7fc4eddd4800>
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+          │                            │    │    │     │      │        └ <function ServerErrorMiddleware.__call__.<locals>._send at 0x7fc4edc32e80>
+          │                            │    │    │     │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │                            │    │    │     └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          │                            │    │    └ <starlette.requests.Request object at 0x7fc4edc7d580>
+          │                            │    └ <fastapi.middleware.asyncexitstack.AsyncExitStackMiddleware object at 0x7fc4eddf35c0>
+          │                            └ <starlette.middleware.exceptions.ExceptionMiddleware object at 0x7fc4edd57620>
+          └ <function wrap_app_handling_exceptions at 0x7fc503c2d260>
+  File "/usr/local/lib/python3.12/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.12/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+          │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7fc4edc32f20>
+          │   │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │   └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          └ <fastapi.middleware.asyncexitstack.AsyncExitStackMiddleware object at 0x7fc4eddf35c0>
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+          │    │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7fc4edc32f20>
+          │    │   │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │    │   └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          │    └ <fastapi.routing.APIRouter object at 0x7fc4eddb2f30>
+          └ <fastapi.middleware.asyncexitstack.AsyncExitStackMiddleware object at 0x7fc4eddf35c0>
+  File "/usr/local/lib/python3.12/dist-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+          │    │                │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7fc4edc32f20>
+          │    │                │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │    │                └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          │    └ <bound method APIRouter.app of <fastapi.routing.APIRouter object at 0x7fc4eddb2f30>>
+          └ <fastapi.routing.APIRouter object at 0x7fc4eddb2f30>
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+          │     │      │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7fc4edc32f20>
+          │     │      │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │     │      └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          │     └ <function _IncludedRouter.handle at 0x7fc503c57880>
+          └ _IncludedRouter(original_router=<fastapi.routing.APIRouter object at 0x7fc4edd87740>, include_context=_RouterIncludeContext(i...
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+          │    │               │      │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7fc4edc32f20>
+          │    │               │      │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │    │               │      └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          │    │               └ <function APIRouter.handle at 0x7fc503c818a0>
+          │    └ <fastapi.routing.APIRouter object at 0x7fc4edd87740>
+          └ _IncludedRouter(original_router=<fastapi.routing.APIRouter object at 0x7fc4edd87740>, include_context=_RouterIncludeContext(i...
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+          │               │                │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7fc4edc32f20>
+          │               │                │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │               │                └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          │               └ <function _IncludedRouter._handle_selected at 0x7fc503c57920>
+          └ _IncludedRouter(original_router=<fastapi.routing.APIRouter object at 0x7fc4edd87740>, include_context=_RouterIncludeContext(i...
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 1773, in _handle_selected
+    await original_route.handle(scope, receive, send)
+          │              │      │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7fc4edc32f20>
+          │              │      │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │              │      └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          │              └ <function APIRoute.handle at 0x7fc503c559e0>
+          └ APIRoute(path='/documents', name='list_documents', methods=['GET'])
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 1264, in handle
+    await app(scope, receive, send)
+          │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7fc4edc32f20>
+          │   │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │   └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          └ <function request_response.<locals>.app at 0x7fc4edc325c0>
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+          │                            │    │        │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7fc4edc32f20>
+          │                            │    │        │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │                            │    │        └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          │                            │    └ <starlette.requests.Request object at 0x7fc4edc7e180>
+          │                            └ <function request_response.<locals>.app.<locals>.app at 0x7fc4edc491c0>
+          └ <function wrap_app_handling_exceptions at 0x7fc503c2d260>
+  File "/usr/local/lib/python3.12/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.12/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+          │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7fc4edc49120>
+          │   │      └ <function _TestClientTransport.handle_request.<locals>.receive at 0x7fc505339bc0>
+          │   └ {'type': 'http', 'http_version': '1.1', 'method': 'GET', 'path': '/documents', 'raw_path': b'/documents', 'root_path': '', 's...
+          └ <function request_response.<locals>.app.<locals>.app at 0x7fc4edc491c0>
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 136, in app
+    response = await f(request)
+                     │ └ <starlette.requests.Request object at 0x7fc4edc7e180>
+                     └ <function get_request_handler.<locals>.app at 0x7fc4edc33060>
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+                         └ <function run_endpoint_function at 0x7fc503c54d60>
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 344, in run_endpoint_function
+    return await dependant.call(**values)
+                 │         │      └ {'db': <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x7fc4f4196240>}
+                 │         └ <function list_documents at 0x7fc4edd96980>
+                 └ Dependant(path_params=[], query_params=[], header_params=[], cookie_params=[], body_params=[], dependencies=[Dependant(path_p...
+
+  File "/home/claude/legalgpt/LegalGPT/backend/app/api/routes/documents.py", line 13, in list_documents
+    docs = await document_service.list_documents(db)
+                 │                │              └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x7fc4f4196240>
+                 │                └ <function list_documents at 0x7fc4edea1440>
+                 └ <module 'app.services.document_service' from '/home/claude/legalgpt/LegalGPT/backend/app/services/document_service.py'>
+
+  File "/home/claude/legalgpt/LegalGPT/backend/app/services/document_service.py", line 128, in list_documents
+    result = await db.execute(select(Document).order_by(Document.created_at.desc()))
+                   │  │       │      │                  │        │          └ <function ColumnOperators.desc at 0x7fc50302a840>
+                   │  │       │      │                  │        └ <sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x7fc4ff9b07c0>
+                   │  │       │      │                  └ <class 'app.db.models.Document'>
+                   │  │       │      └ <class 'app.db.models.Document'>
+                   │  │       └ <function select at 0x7fc502d4dd00>
+                   │  └ <function AsyncSession.execute at 0x7fc5029e5bc0>
+                   └ <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x7fc4f4196240>
+
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/ext/asyncio/session.py", line 461, in execute
+    result = await greenlet_spawn(
+                   └ <function greenlet_spawn at 0x7fc503616fc0>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             │       │      │   └ <built-in function exc_info>
+             │       │      └ <module 'sys' (built-in)>
+             │       └ <method 'throw' of 'greenlet.greenlet' objects>
+             └ <_AsyncIoGreenlet object at 0x7fc4edc4dd40 (otid=0x7fc4edc7e5b0) dead>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/orm/session.py", line 2362, in execute
+    return self._execute_internal(
+           │    └ <function Session._execute_internal at 0x7fc50295a3e0>
+           └ <sqlalchemy.orm.session.Session object at 0x7fc4edc7e630>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/orm/session.py", line 2247, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                   │      │                 └ <classmethod(<function AbstractORMCompileState.orm_execute_statement at 0x7fc502be3f60>)>
+                   │      └ <class 'sqlalchemy.orm.context.ORMSelectCompileState'>
+                   └ typing.Any
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/orm/context.py", line 305, in orm_execute_statement
+    result = conn.execute(
+             │    └ <function Connection.execute at 0x7fc502da2700>
+             └ <sqlalchemy.engine.base.Connection object at 0x7fc4edc7e840>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 1418, in execute
+    return meth(
+           └ <bound method ClauseElement._execute_on_connection of <sqlalchemy.sql.selectable.Select object at 0x7fc4edc7d340>>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+           │          └ <function Connection._execute_clauseelement at 0x7fc502da2a20>
+           └ <sqlalchemy.engine.base.Connection object at 0x7fc4edc7e840>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+          │    └ <function Connection._execute_context at 0x7fc502da2c00>
+          └ <sqlalchemy.engine.base.Connection object at 0x7fc4edc7e840>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           │    └ <function Connection._exec_single_context at 0x7fc502da2ca0>
+           └ <sqlalchemy.engine.base.Connection object at 0x7fc4edc7e840>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    │    └ <function Connection._handle_dbapi_exception at 0x7fc502da2f20>
+    └ <sqlalchemy.engine.base.Connection object at 0x7fc4edc7e840>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+          │                    │              │                 └ OperationalError('no such table: documents')
+          │                    │              └ (<class 'sqlite3.OperationalError'>, OperationalError('no such table: documents'), <traceback object at 0x7fc4edcc7d40>)
+          │                    └ <method 'with_traceback' of 'BaseException' objects>
+          └ OperationalError('(sqlite3.OperationalError) no such table: documents')
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    │    │       └ <function DefaultDialect.do_execute at 0x7fc502c65760>
+    │    └ <sqlalchemy.dialects.sqlite.aiosqlite.SQLiteDialect_aiosqlite object at 0x7fc5028d4380>
+    └ <sqlalchemy.engine.base.Connection object at 0x7fc4edc7e840>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+    │      │       │          └ ()
+    │      │       └ 'SELECT documents.id, documents.filename, documents.original_filename, documents.content_type, documents.file_path, documents...
+    │      └ <function AsyncAdapt_aiosqlite_cursor.execute at 0x7fc50271d080>
+    └ <sqlalchemy.dialects.sqlite.aiosqlite.AsyncAdapt_aiosqlite_cursor object at 0x7fc4edc1fe20>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 147, in execute
+    self._adapt_connection._handle_exception(error)
+    │    └ <member '_adapt_connection' of 'AsyncAdapt_aiosqlite_cursor' objects>
+    └ <sqlalchemy.dialects.sqlite.aiosqlite.AsyncAdapt_aiosqlite_cursor object at 0x7fc4edc1fe20>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 298, in _handle_exception
+    raise error
+          └ OperationalError('no such table: documents')
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 129, in execute
+    self.await_(_cursor.execute(operation, parameters))
+    │    │      │       │       │          └ ()
+    │    │      │       │       └ 'SELECT documents.id, documents.filename, documents.original_filename, documents.content_type, documents.file_path, documents...
+    │    │      │       └ <function Cursor.execute at 0x7fc5027327a0>
+    │    │      └ <aiosqlite.cursor.Cursor object at 0x7fc4edee2030>
+    │    └ <member 'await_' of 'AsyncAdapt_aiosqlite_cursor' objects>
+    └ <sqlalchemy.dialects.sqlite.aiosqlite.AsyncAdapt_aiosqlite_cursor object at 0x7fc4edc1fe20>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <coroutine object Cursor.execute at 0x7fc4edcc3d80>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x7fc4edc4dd40 (otid=0x7fc4edc7e5b0) dead>
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <coroutine object Cursor.execute at 0x7fc4edcc3d80>
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/cursor.py", line 48, in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+          │    │        │    │       │        │    └ ()
+          │    │        │    │       │        └ 'SELECT documents.id, documents.filename, documents.original_filename, documents.content_type, documents.file_path, documents...
+          │    │        │    │       └ <method 'execute' of 'sqlite3.Cursor' objects>
+          │    │        │    └ <sqlite3.Cursor object at 0x7fc4edc942c0>
+          │    │        └ <aiosqlite.cursor.Cursor object at 0x7fc4edee2030>
+          │    └ <function Cursor._execute at 0x7fc502732700>
+          └ <aiosqlite.cursor.Cursor object at 0x7fc4edee2030>
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/cursor.py", line 40, in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+                 │    │     │        │    │       └ {}
+                 │    │     │        │    └ ('SELECT documents.id, documents.filename, documents.original_filename, documents.content_type, documents.file_path, document...
+                 │    │     │        └ <built-in method execute of sqlite3.Cursor object at 0x7fc4edc942c0>
+                 │    │     └ <function Connection._execute at 0x7fc5027339c0>
+                 │    └ <Connection(Thread-4, stopped daemon 140483799021248)>
+                 └ <aiosqlite.cursor.Cursor object at 0x7fc4edee2030>
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/core.py", line 132, in _execute
+    return await future
+                 └ <Future finished exception=OperationalError('no such table: documents')>
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/core.py", line 115, in run
+    result = function()
+             └ functools.partial(<built-in method close of sqlite3.Connection object at 0x7fc4eddfbd30>)
+
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: documents
+[SQL: SELECT documents.id, documents.filename, documents.original_filename, documents.content_type, documents.file_path, documents.size_bytes, documents.page_count, documents.chunk_count, documents.status, documents.error_message, documents.preview_text, documents.created_at, documents.updated_at 
+FROM documents ORDER BY documents.created_at DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-07-05 02:20:21.393 | ERROR    | app.services.document_service:process_document:110 - Document f74446de-a309-4669-a878-6c3fe25ef9e5 processing failed: Failed to add chunks to vector store: Local embedding generation failed: Failed to load local embedding model 'all-MiniLM-L6-v2': We couldn't connect to 'https://huggingface.co' to load this file, couldn't find it in the cached files and it looks like sentence-transformers/all-MiniLM-L6-v2 is not the path to a directory containing a file named config.json.
+Checkout your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.. Ensure 'sentence-transformers' is installed and the model can be downloaded (or pre-cached) from Hugging Face.
+2026-07-05 09:02:28.260 | ERROR    | app.main:legalgpt_error_handler:48 - llm_provider_error on POST /analysis/7e415887-f3f0-4ede-922e-07fde1dd38b7: Ollama generation failed: 
+2026-07-05 09:04:44.847 | ERROR    | app.main:legalgpt_error_handler:48 - llm_provider_error on POST /analysis/7e415887-f3f0-4ede-922e-07fde1dd38b7: Ollama generation failed: 
+2026-07-05 10:01:39.109 | ERROR    | app.main:legalgpt_error_handler:48 - llm_provider_error on POST /analysis/7e415887-f3f0-4ede-922e-07fde1dd38b7: Ollama generation failed: 

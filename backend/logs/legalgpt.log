@@ -1,0 +1,152 @@
+2026-07-04 17:30:22.206 | ERROR    | app.main:unhandled_exception_handler:57 - Unhandled error on GET /documents: (sqlite3.OperationalError) no such table: documents
+[SQL: SELECT documents.id, documents.filename, documents.original_filename, documents.content_type, documents.file_path, documents.size_bytes, documents.page_count, documents.chunk_count, documents.status, documents.error_message, documents.preview_text, documents.created_at, documents.updated_at 
+FROM documents ORDER BY documents.created_at DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 147, in execute
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 298, in _handle_exception
+    raise error
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 129, in execute
+    self.await_(_cursor.execute(operation, parameters))
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/cursor.py", line 48, in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/cursor.py", line 40, in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/core.py", line 132, in _execute
+    return await future
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/core.py", line 115, in run
+    result = function()
+sqlite3.OperationalError: no such table: documents
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.12/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 1773, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 1264, in handle
+    await app(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/lib/python3.12/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.12/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 136, in app
+    response = await f(request)
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+  File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 344, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/home/claude/legalgpt/LegalGPT/backend/app/api/routes/documents.py", line 13, in list_documents
+    docs = await document_service.list_documents(db)
+  File "/home/claude/legalgpt/LegalGPT/backend/app/services/document_service.py", line 128, in list_documents
+    result = await db.execute(select(Document).order_by(Document.created_at.desc()))
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/ext/asyncio/session.py", line 461, in execute
+    result = await greenlet_spawn(
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/orm/session.py", line 2362, in execute
+    return self._execute_internal(
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/orm/session.py", line 2247, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/orm/context.py", line 305, in orm_execute_statement
+    result = conn.execute(
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 1418, in execute
+    return meth(
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 147, in execute
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 298, in _handle_exception
+    raise error
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/dialects/sqlite/aiosqlite.py", line 129, in execute
+    self.await_(_cursor.execute(operation, parameters))
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+  File "/usr/local/lib/python3.12/dist-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/cursor.py", line 48, in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/cursor.py", line 40, in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/core.py", line 132, in _execute
+    return await future
+  File "/usr/local/lib/python3.12/dist-packages/aiosqlite/core.py", line 115, in run
+    result = function()
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: documents
+[SQL: SELECT documents.id, documents.filename, documents.original_filename, documents.content_type, documents.file_path, documents.size_bytes, documents.page_count, documents.chunk_count, documents.status, documents.error_message, documents.preview_text, documents.created_at, documents.updated_at 
+FROM documents ORDER BY documents.created_at DESC]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-07-04 17:30:29.117 | INFO     | app.main:lifespan:20 - Starting LegalGPT API v1.0.0 (development)
+2026-07-04 17:30:29.139 | INFO     | app.main:lifespan:23 - LLM provider: ollama | Embedding provider: local
+2026-07-04 17:30:29.334 | INFO     | app.main:lifespan:27 - Shutting down LegalGPT API.
+2026-07-04 17:32:37.573 | INFO     | app.services.embedding_service:model:41 - Loading local embedding model 'all-MiniLM-L6-v2'...
+2026-07-04 17:32:50.950 | INFO     | app.services.document_service:process_document:107 - Document 4d2e32d0-e119-4f22-a472-ba8b1daf5cee processed successfully (1 chunks).
+2026-07-05 02:18:57.783 | INFO     | app.main:lifespan:20 - Starting LegalGPT API v1.0.0 (development)
+2026-07-05 02:18:57.828 | INFO     | app.main:lifespan:23 - LLM provider: ollama | Embedding provider: local
+2026-07-05 02:18:59.235 | INFO     | app.main:lifespan:27 - Shutting down LegalGPT API.
+2026-07-05 02:19:06.041 | INFO     | app.main:lifespan:20 - Starting LegalGPT API v1.0.0 (development)
+2026-07-05 02:19:06.062 | INFO     | app.main:lifespan:23 - LLM provider: ollama | Embedding provider: local
+2026-07-05 02:19:26.298 | INFO     | app.api.routes.upload:upload_pdf:51 - Uploaded document f74446de-a309-4669-a878-6c3fe25ef9e5 (LEGALGPT_REQS.pdf, 313276 bytes)
+2026-07-05 02:20:21.327 | INFO     | app.services.embedding_service:model:41 - Loading local embedding model 'all-MiniLM-L6-v2'...
+2026-07-05 02:20:21.393 | ERROR    | app.services.document_service:process_document:110 - Document f74446de-a309-4669-a878-6c3fe25ef9e5 processing failed: Failed to add chunks to vector store: Local embedding generation failed: Failed to load local embedding model 'all-MiniLM-L6-v2': We couldn't connect to 'https://huggingface.co' to load this file, couldn't find it in the cached files and it looks like sentence-transformers/all-MiniLM-L6-v2 is not the path to a directory containing a file named config.json.
+Checkout your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.. Ensure 'sentence-transformers' is installed and the model can be downloaded (or pre-cached) from Hugging Face.
+2026-07-05 02:20:44.964 | INFO     | app.main:lifespan:27 - Shutting down LegalGPT API.
+2026-07-05 08:45:11.989 | INFO     | app.main:lifespan:20 - Starting LegalGPT API v1.0.0 (development)
+2026-07-05 08:50:55.393 | INFO     | app.main:lifespan:20 - Starting LegalGPT API v1.0.0 (development)
+2026-07-05 08:50:55.458 | INFO     | app.main:lifespan:23 - LLM provider: ollama | Embedding provider: local
+2026-07-05 08:57:57.699 | INFO     | app.api.routes.upload:upload_pdf:51 - Uploaded document 7e415887-f3f0-4ede-922e-07fde1dd38b7 (LEGALGPT_REQS.pdf, 313276 bytes)
+2026-07-05 08:59:00.771 | INFO     | app.services.embedding_service:model:41 - Loading local embedding model 'all-MiniLM-L6-v2'...
+2026-07-05 08:59:22.428 | INFO     | app.services.embedding_service:model:43 - Local embedding model loaded.
+2026-07-05 08:59:22.872 | INFO     | app.services.document_service:process_document:107 - Document 7e415887-f3f0-4ede-922e-07fde1dd38b7 processed successfully (1 chunks).
+2026-07-05 09:02:28.260 | ERROR    | app.main:legalgpt_error_handler:48 - llm_provider_error on POST /analysis/7e415887-f3f0-4ede-922e-07fde1dd38b7: Ollama generation failed: 
+2026-07-05 09:04:44.847 | ERROR    | app.main:legalgpt_error_handler:48 - llm_provider_error on POST /analysis/7e415887-f3f0-4ede-922e-07fde1dd38b7: Ollama generation failed: 
+2026-07-05 09:25:38.787 | INFO     | app.main:lifespan:20 - Starting LegalGPT API v1.0.0 (development)
+2026-07-05 09:25:38.818 | INFO     | app.main:lifespan:23 - LLM provider: ollama | Embedding provider: local
+2026-07-05 09:32:25.392 | INFO     | app.services.embedding_service:model:41 - Loading local embedding model 'all-MiniLM-L6-v2'...
+2026-07-05 09:32:38.497 | INFO     | app.services.embedding_service:model:43 - Local embedding model loaded.
+2026-07-05 09:59:23.012 | INFO     | app.main:lifespan:27 - Shutting down LegalGPT API.
+2026-07-05 09:59:33.871 | INFO     | app.main:lifespan:20 - Starting LegalGPT API v1.0.0 (development)
+2026-07-05 09:59:33.906 | INFO     | app.main:lifespan:23 - LLM provider: ollama | Embedding provider: local
+2026-07-05 10:01:39.109 | ERROR    | app.main:legalgpt_error_handler:48 - llm_provider_error on POST /analysis/7e415887-f3f0-4ede-922e-07fde1dd38b7: Ollama generation failed: 

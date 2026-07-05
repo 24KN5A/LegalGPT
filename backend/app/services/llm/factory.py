@@ -18,6 +18,8 @@ def get_llm_provider() -> LLMProvider:
 
     if provider == "openai":
         from app.services.llm.openai_provider import OpenAIProvider
+    elif provider == "gemini":
+    return GeminiProvider()
 
         return OpenAIProvider(api_key=settings.openai_api_key, model=settings.openai_chat_model)
 

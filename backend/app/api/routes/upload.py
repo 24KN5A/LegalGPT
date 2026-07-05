@@ -3,9 +3,11 @@ import os
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.deps import get_current_user
 from app.config import settings
 from app.core.logging import logger
 from app.db.database import AsyncSessionLocal, get_db
+from app.db.models import User
 from app.models.schemas import DocumentUploadResponse
 from app.services import document_service
 
@@ -24,6 +26,7 @@ async def upload_pdf(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     if not file.filename:
         raise HTTPException(status_code=400, detail="No filename provided.")
@@ -46,6 +49,7 @@ async def upload_pdf(
         file_path=file_path,
         content_type=file.content_type or "application/pdf",
         size_bytes=size_bytes,
+        user_id=current_user.id,
     )
 
     logger.info(f"Uploaded document {doc.id} ({file.filename}, {size_bytes} bytes)")

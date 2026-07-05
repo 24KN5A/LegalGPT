@@ -79,6 +79,13 @@ class Settings(BaseSettings):
     # --- Chroma collection ---
     chroma_collection_name: str = "legalgpt_documents"
 
+    # --- Auth ---
+    # IMPORTANT: override `secret_key` via a `.env` file (SECRET_KEY=...) in any
+    # real deployment. This default is fine for local dev only.
+    secret_key: str = "dev-only-insecure-secret-change-me-in-.env"
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 60 * 24 * 7  # 7 days
+
     def ensure_dirs(self) -> None:
         for d in (self.upload_dir, self.chroma_persist_dir, self.sqlite_path.parent, self.log_dir):
             d.mkdir(parents=True, exist_ok=True)

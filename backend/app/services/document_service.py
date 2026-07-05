@@ -53,8 +53,10 @@ async def create_document_record(
     file_path: str,
     content_type: str,
     size_bytes: int,
+    user_id: str | None = None,
 ) -> Document:
     doc = Document(
+        user_id=user_id,
         filename=stored_filename,
         original_filename=original_filename,
         content_type=content_type or "application/pdf",
@@ -116,21 +118,30 @@ async def process_document(db: AsyncSession, document_id: str) -> Document:
     return doc
 
 
-async def get_document(db: AsyncSession, document_id: str) -> Document:
+async def get_document(
+    db: AsyncSession, document_id: str, user_id: str | None = None
+) -> Document:
     result = await db.execute(select(Document).where(Document.id == document_id))
     doc = result.scalar_one_or_none()
     if doc is None:
         raise DocumentNotFoundError(f"Document '{document_id}' not found.")
+    # Ownership check: a document belonging to another user 404s (not 403)
+    # so we don't leak whether a given document id exists at all.
+    if user_id is not None and doc.user_id is not None and doc.user_id != user_id:
+        raise DocumentNotFoundError(f"Document '{document_id}' not found.")
     return doc
 
 
-async def list_documents(db: AsyncSession) -> list[Document]:
-    result = await db.execute(select(Document).order_by(Document.created_at.desc()))
+async def list_documents(db: AsyncSession, user_id: str | None = None) -> list[Document]:
+    stmt = select(Document).order_by(Document.created_at.desc())
+    if user_id is not None:
+        stmt = stmt.where(Document.user_id == user_id)
+    result = await db.execute(stmt)
     return list(result.scalars().all())
 
 
-async def delete_document(db: AsyncSession, document_id: str) -> None:
-    doc = await get_document(db, document_id)
+async def delete_document(db: AsyncSession, document_id: str, user_id: str | None = None) -> None:
+    doc = await get_document(db, document_id, user_id=user_id)
 
     try:
         get_vector_store().delete_document(document_id)

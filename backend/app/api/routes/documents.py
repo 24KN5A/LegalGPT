@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.deps import get_current_user
 from app.db.database import get_db
+from app.db.models import User
 from app.models.schemas import DocumentListResponse, DocumentResponse
 from app.services import document_service
 
@@ -9,8 +11,10 @@ router = APIRouter(prefix="/documents", tags=["documents"])
 
 
 @router.get("", response_model=DocumentListResponse)
-async def list_documents(db: AsyncSession = Depends(get_db)):
-    docs = await document_service.list_documents(db)
+async def list_documents(
+    db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)
+):
+    docs = await document_service.list_documents(db, user_id=current_user.id)
     return DocumentListResponse(
         documents=[DocumentResponse.model_validate(d) for d in docs],
         total=len(docs),
@@ -18,12 +22,20 @@ async def list_documents(db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/{document_id}", response_model=DocumentResponse)
-async def get_document(document_id: str, db: AsyncSession = Depends(get_db)):
-    doc = await document_service.get_document(db, document_id)
+async def get_document(
+    document_id: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    doc = await document_service.get_document(db, document_id, user_id=current_user.id)
     return DocumentResponse.model_validate(doc)
 
 
 @router.delete("/{document_id}", status_code=204)
-async def delete_document(document_id: str, db: AsyncSession = Depends(get_db)):
-    await document_service.delete_document(db, document_id)
+async def delete_document(
+    document_id: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    await document_service.delete_document(db, document_id, user_id=current_user.id)
     return None

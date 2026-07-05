@@ -10,7 +10,7 @@ const RISK_STYLES: Record<RiskLevel, string> = {
 
 export function RiskBadge({ level }: { level: RiskLevel | string }) {
   const key = (RISK_STYLES[level as RiskLevel] && level) as RiskLevel | undefined;
-  const style = key ? RISK_STYLES[key] : "bg-white/5 text-[var(--color-text-muted)] border-white/10";
+  const style = key ? RISK_STYLES[key] : "border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-border)]";
   return (
     <span
       className={clsx(
@@ -24,7 +24,7 @@ export function RiskBadge({ level }: { level: RiskLevel | string }) {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  uploaded: "bg-white/5 text-[var(--color-text-muted)] border-white/10",
+  uploaded: "border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-border)]",
   processing: "bg-[var(--color-accent-soft)] text-[var(--color-accent-strong)] border-[var(--color-accent)]/30",
   ready: "bg-emerald-400/10 text-emerald-300 border-emerald-400/30",
   failed: "bg-red-400/10 text-red-300 border-red-400/30",

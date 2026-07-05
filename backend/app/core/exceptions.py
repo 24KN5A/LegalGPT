@@ -63,3 +63,18 @@ class LLMNotConfiguredError(LegalGPTError):
 class ConversationNotFoundError(LegalGPTError):
     status_code = 404
     error_code = "conversation_not_found"
+
+
+class EmailAlreadyRegisteredError(LegalGPTError):
+    status_code = 409
+    error_code = "email_already_registered"
+
+
+class InvalidCredentialsError(LegalGPTError):
+    status_code = 401
+    error_code = "invalid_credentials"
+
+
+class NotAuthenticatedError(LegalGPTError):
+    status_code = 401
+    error_code = "not_authenticated"

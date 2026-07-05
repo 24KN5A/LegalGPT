@@ -1,12 +1,16 @@
 import type {
+  AuthResponse,
   ChatResponse,
   Conversation,
   ContractAnalysis,
   DocumentListResponse,
   DocumentUploadResponse,
+  EvaluationResult,
   HealthStatus,
   LegalDocument,
+  User,
 } from "../types";
+import { authHeader, clearToken } from "./auth";
 
 // In dev, Vite proxies /api -> http://localhost:8000 (see vite.config.ts).
 // In production, set VITE_API_BASE_URL to the deployed backend origin.
@@ -31,6 +35,11 @@ async function handleResponse<T>(res: Response): Promise<T> {
     } catch {
       // response wasn't JSON
     }
+    if (res.status === 401) {
+      // Token missing/expired/invalid -- drop it so the next protected-route
+      // check redirects to /login instead of silently failing forever.
+      clearToken();
+    }
     throw new ApiError(
       res.status,
       body.error_code ?? "unknown_error",
@@ -48,6 +57,35 @@ export async function getHealth(): Promise<HealthStatus> {
   return handleResponse<HealthStatus>(res);
 }
 
+// ---------- Auth ----------
+
+export async function signup(params: {
+  full_name: string;
+  email: string;
+  password: string;
+}): Promise<AuthResponse> {
+  const res = await fetch(`${BASE_URL}/auth/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(params),
+  });
+  return handleResponse<AuthResponse>(res);
+}
+
+export async function login(params: { email: string; password: string }): Promise<AuthResponse> {
+  const res = await fetch(`${BASE_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(params),
+  });
+  return handleResponse<AuthResponse>(res);
+}
+
+export async function getMe(): Promise<User> {
+  const res = await fetch(`${BASE_URL}/auth/me`, { headers: { ...authHeader() } });
+  return handleResponse<User>(res);
+}
+
 // ---------- Documents ----------
 
 export async function uploadDocument(
@@ -57,6 +95,8 @@ export async function uploadDocument(
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `${BASE_URL}/upload`);
+    const token = authHeader().Authorization;
+    if (token) xhr.setRequestHeader("Authorization", token);
 
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable && onProgress) {
@@ -93,17 +133,20 @@ export async function uploadDocument(
 }
 
 export async function listDocuments(): Promise<DocumentListResponse> {
-  const res = await fetch(`${BASE_URL}/documents`);
+  const res = await fetch(`${BASE_URL}/documents`, { headers: { ...authHeader() } });
   return handleResponse<DocumentListResponse>(res);
 }
 
 export async function getDocument(id: string): Promise<LegalDocument> {
-  const res = await fetch(`${BASE_URL}/documents/${id}`);
+  const res = await fetch(`${BASE_URL}/documents/${id}`, { headers: { ...authHeader() } });
   return handleResponse<LegalDocument>(res);
 }
 
 export async function deleteDocument(id: string): Promise<void> {
-  const res = await fetch(`${BASE_URL}/documents/${id}`, { method: "DELETE" });
+  const res = await fetch(`${BASE_URL}/documents/${id}`, {
+    method: "DELETE",
+    headers: { ...authHeader() },
+  });
   return handleResponse<void>(res);
 }
 
@@ -117,10 +160,19 @@ export async function sendChatMessage(params: {
 }): Promise<ChatResponse> {
   const res = await fetch(`${BASE_URL}/chat`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeader() },
     body: JSON.stringify(params),
   });
   return handleResponse<ChatResponse>(res);
+}
+
+// ---------- Evaluation ----------
+
+export async function getRiskClassifierEvaluation(): Promise<EvaluationResult> {
+  const res = await fetch(`${BASE_URL}/evaluation/risk-classifier`, {
+    headers: { ...authHeader() },
+  });
+  return handleResponse<EvaluationResult>(res);
 }
 
 export type StreamEvent =
@@ -136,7 +188,7 @@ export async function streamChatMessage(
 ): Promise<void> {
   const res = await fetch(`${BASE_URL}/chat/stream`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeader() },
     body: JSON.stringify(params),
     signal,
   });
@@ -176,18 +228,21 @@ export async function streamChatMessage(
 }
 
 export async function listConversations(): Promise<{ conversations: Conversation[] }> {
-  const res = await fetch(`${BASE_URL}/conversations`);
+  const res = await fetch(`${BASE_URL}/conversations`, { headers: { ...authHeader() } });
   return handleResponse(res);
 }
 
 export async function getConversation(id: string): Promise<Conversation> {
-  const res = await fetch(`${BASE_URL}/conversations/${id}`);
+  const res = await fetch(`${BASE_URL}/conversations/${id}`, { headers: { ...authHeader() } });
   return handleResponse<Conversation>(res);
 }
 
 // ---------- Analysis ----------
 
 export async function analyzeDocument(documentId: string): Promise<ContractAnalysis> {
-  const res = await fetch(`${BASE_URL}/analysis/${documentId}`, { method: "POST" });
+  const res = await fetch(`${BASE_URL}/analysis/${documentId}`, {
+    method: "POST",
+    headers: { ...authHeader() },
+  });
   return handleResponse<ContractAnalysis>(res);
 }

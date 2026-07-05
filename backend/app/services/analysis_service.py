@@ -46,7 +46,7 @@ def _extract_json(raw: str) -> dict:
     return json.loads(match.group(0))
 
 
-async def analyze_document(file_path: str, max_chars: int = 3000) -> dict:
+async def analyze_document(file_path: str, max_chars: int = 12000) -> dict:
     pdf_data = pdf_service.extract_text(file_path)
     text = pdf_data["text"][:max_chars]
 

@@ -87,3 +87,46 @@ export interface ApiErrorBody {
   error_code: string;
   message: string;
 }
+
+// ---------- Auth ----------
+
+export interface User {
+  id: string;
+  email: string;
+  full_name: string;
+  created_at: string;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  user: User;
+}
+
+// ---------- Evaluation ----------
+
+export interface ClassMetric {
+  label: RiskLevel | string;
+  precision: number;
+  recall: number;
+  f1: number;
+  support: number;
+}
+
+export interface AverageMetrics {
+  precision: number;
+  recall: number;
+  f1: number;
+}
+
+export interface EvaluationResult {
+  model_name: string;
+  dataset_name: string;
+  num_samples: number;
+  labels: string[];
+  accuracy: number;
+  per_class: ClassMetric[];
+  macro_avg: AverageMetrics;
+  weighted_avg: AverageMetrics;
+  confusion_matrix: Record<string, number[]>;
+}

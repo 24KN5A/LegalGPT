@@ -4,8 +4,9 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.deps import get_current_user
 from app.db.database import get_db
-from app.db.models import MessageRole
+from app.db.models import MessageRole, User
 from app.models.schemas import (
     ChatMessageResponse,
     ChatRequest,
@@ -20,9 +21,13 @@ router = APIRouter(tags=["chat"])
 
 
 @router.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest, db: AsyncSession = Depends(get_db)):
+async def chat(
+    request: ChatRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     convo = await conversation_service.get_or_create_conversation(
-        db, request.conversation_id, request.document_id, request.message
+        db, request.conversation_id, request.document_id, request.message, user_id=current_user.id
     )
     history = await conversation_service.get_history(db, convo.id)
 
@@ -63,7 +68,11 @@ async def chat(request: ChatRequest, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/chat/stream")
-async def chat_stream(request: ChatRequest, db: AsyncSession = Depends(get_db)):
+async def chat_stream(
+    request: ChatRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     """Server-Sent-Events style streaming response for the chat UI.
 
     Emits newline-delimited JSON events:
@@ -72,7 +81,7 @@ async def chat_stream(request: ChatRequest, db: AsyncSession = Depends(get_db)):
       {"type": "done", "conversation_id": "...", "message_id": "..."}
     """
     convo = await conversation_service.get_or_create_conversation(
-        db, request.conversation_id, request.document_id, request.message
+        db, request.conversation_id, request.document_id, request.message, user_id=current_user.id
     )
     history = await conversation_service.get_history(db, convo.id)
     await conversation_service.add_message(db, convo.id, MessageRole.USER, request.message)
@@ -114,16 +123,22 @@ async def chat_stream(request: ChatRequest, db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/conversations", response_model=ConversationListResponse)
-async def list_conversations(db: AsyncSession = Depends(get_db)):
-    convos = await conversation_service.list_conversations(db)
+async def list_conversations(
+    db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)
+):
+    convos = await conversation_service.list_conversations(db, user_id=current_user.id)
     return ConversationListResponse(
         conversations=[_to_conversation_response(c) for c in convos]
     )
 
 
 @router.get("/conversations/{conversation_id}", response_model=ConversationResponse)
-async def get_conversation(conversation_id: str, db: AsyncSession = Depends(get_db)):
-    convo = await conversation_service.get_conversation(db, conversation_id)
+async def get_conversation(
+    conversation_id: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    convo = await conversation_service.get_conversation(db, conversation_id, user_id=current_user.id)
     return _to_conversation_response(convo)
 
 

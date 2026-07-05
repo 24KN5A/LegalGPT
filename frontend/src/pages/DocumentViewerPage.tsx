@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, MessageSquare, ShieldAlert, Trash2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowLeft, BarChart3, MessageSquare, Trash2 } from "lucide-react";
 import AppShell from "../components/layout/AppShell";
 import GlassCard from "../components/ui/GlassCard";
 import Button from "../components/ui/Button";
+import Skeleton from "../components/ui/Skeleton";
 import { StatusBadge } from "../components/ui/Badge";
 import { useToast } from "../components/ui/toast-context";
-import { getDocument, deleteDocument } from "../lib/api";
-import type { LegalDocument } from "../types";
+import { getDocument, deleteDocument, listConversations } from "../lib/api";
+import type { LegalDocument, Conversation } from "../types";
 
 export default function DocumentViewerPage() {
   const { id } = useParams<{ id: string }>();
   const [doc, setDoc] = useState<LegalDocument | null>(null);
+  const [relatedChats, setRelatedChats] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const navigate = useNavigate();
@@ -48,6 +51,13 @@ export default function DocumentViewerPage() {
     };
   }, [id]);
 
+  useEffect(() => {
+    if (!id) return;
+    listConversations()
+      .then((res) => setRelatedChats(res.conversations.filter((c) => c.document_id === id)))
+      .catch(() => setRelatedChats([]));
+  }, [id]);
+
   const handleDelete = async () => {
     if (!doc || !confirm(`Delete "${doc.original_filename}"?`)) return;
     try {
@@ -62,7 +72,10 @@ export default function DocumentViewerPage() {
   if (loading) {
     return (
       <AppShell title="Document">
-        <p className="text-sm text-[var(--color-text-muted)]">Loading...</p>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <Skeleton className="h-64 lg:col-span-2" />
+          <Skeleton className="h-64" />
+        </div>
       </AppShell>
     );
   }
@@ -71,7 +84,7 @@ export default function DocumentViewerPage() {
     return (
       <AppShell title="Document">
         <p className="text-sm text-[var(--color-text-muted)]">Document not found.</p>
-        <Link to="/library" className="mt-4 inline-block text-sm text-[var(--color-accent)]">
+        <Link to="/library" className="mt-4 inline-block text-sm" style={{ color: "var(--color-accent)" }}>
           Back to library
         </Link>
       </AppShell>
@@ -101,22 +114,24 @@ export default function DocumentViewerPage() {
           )}
 
           {(doc.status === "processing" || doc.status === "uploaded") && (
-            <div className="mb-4 rounded-xl border border-[var(--color-accent)]/30 bg-[var(--color-accent-soft)] p-4 text-sm text-[var(--color-accent-strong)]">
-              This document is still being processed — chunking and indexing usually takes a few
-              seconds.
-            </div>
+            <motion.div
+              animate={{ opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 1.8, repeat: Infinity }}
+              className="mb-4 rounded-xl border p-4 text-sm"
+              style={{ borderColor: "var(--color-accent)", background: "var(--color-accent-soft)", color: "var(--color-accent-strong)" }}
+            >
+              This document is still being processed — chunking and indexing usually takes a few seconds.
+            </motion.div>
           )}
 
-          <h3 className="mb-2 font-mono text-xs uppercase tracking-wide text-[var(--color-text-faint)]">
-            Preview
-          </h3>
+          <h3 className="mb-2 font-mono text-xs uppercase tracking-wide text-[var(--color-text-faint)]">Preview</h3>
           <p className="whitespace-pre-line text-sm leading-relaxed text-[var(--color-text-muted)]">
             {doc.preview_text ?? "No preview available yet."}
           </p>
         </GlassCard>
 
         <div className="space-y-6">
-          <GlassCard className="p-6">
+          <GlassCard className="p-6" delay={0.05}>
             <h3 className="mb-4 font-display text-lg">Details</h3>
             <dl className="space-y-3 text-sm">
               <Row label="Pages" value={String(doc.page_count)} />
@@ -126,7 +141,7 @@ export default function DocumentViewerPage() {
             </dl>
           </GlassCard>
 
-          <GlassCard className="p-6">
+          <GlassCard className="p-6" delay={0.1}>
             <h3 className="mb-4 font-display text-lg">Actions</h3>
             <div className="space-y-2">
               <Link to={`/chat?document=${doc.id}`} className="block">
@@ -134,9 +149,9 @@ export default function DocumentViewerPage() {
                   <MessageSquare className="h-4 w-4" /> Ask about this document
                 </Button>
               </Link>
-              <Link to={`/analysis?document=${doc.id}`} className="block">
+              <Link to="/insights" className="block">
                 <Button variant="secondary" className="w-full justify-start" disabled={doc.status !== "ready"}>
-                  <ShieldAlert className="h-4 w-4" /> Run risk analysis
+                  <BarChart3 className="h-4 w-4" /> View model evaluation
                 </Button>
               </Link>
               <Button variant="danger" className="w-full justify-start" onClick={handleDelete}>
@@ -144,6 +159,23 @@ export default function DocumentViewerPage() {
               </Button>
             </div>
           </GlassCard>
+
+          {relatedChats.length > 0 && (
+            <GlassCard className="p-6" delay={0.15}>
+              <h3 className="mb-3 font-display text-lg">Related chats</h3>
+              <div className="space-y-1.5">
+                {relatedChats.slice(0, 4).map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => navigate(`/chat?document=${doc.id}&conversation=${c.id}`)}
+                    className="block w-full truncate rounded-lg px-2 py-1.5 text-left text-xs text-[var(--color-text-muted)] hover:bg-[var(--color-border)]"
+                  >
+                    {c.title || "Untitled conversation"}
+                  </button>
+                ))}
+              </div>
+            </GlassCard>
+          )}
         </div>
       </div>
     </AppShell>

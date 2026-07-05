@@ -1,40 +1,88 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
 /*
-  LegalGPT design tokens.
-  Direction: quiet, precise, "after-hours law library" -- near-black base,
-  a warm brass/seal-wax accent (not the generic acid-green or terracotta
-  defaults), a serif display face for authority, glass panels for the
-  "AI reading through the document" feeling.
+  LegalGPT design system.
+  Two themes (dark default, light), one accent language: gold as the
+  primary signal color, with amber/royal-blue/emerald/purple reserved for
+  semantic states (processing, links/info, success, AI/insights) rather
+  than decoration -- keeps a five-color palette from turning into noise.
 */
-:root {
-  --color-bg: #0a0b0e;
-  --color-bg-elevated: #101218;
-  --color-surface: #14161d;
+:root,
+[data-theme="dark"] {
+  --color-bg: #08090b;
+  --color-bg-elevated: #101116;
+  --color-surface: #16171d;
   --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-strong: rgba(255, 255, 255, 0.14);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
 
-  --color-text: #e9e7e1;
-  --color-text-muted: #93949e;
-  --color-text-faint: #5b5c66;
+  --color-text: #edeef2;
+  --color-text-muted: #94969f;
+  --color-text-faint: #55575f;
 
-  --color-accent: #c9a35f;
-  --color-accent-soft: #c9a35f22;
-  --color-accent-strong: #e0bd7c;
+  --color-accent: #d4af6a;
+  --color-accent-soft: rgba(212, 175, 106, 0.14);
+  --color-accent-strong: #e8c98a;
+  --color-accent-contrast: #171208;
 
-  --color-risk-low: #4ade80;
-  --color-risk-medium: #fbbf24;
-  --color-risk-high: #fb923c;
-  --color-risk-critical: #f87171;
+  --color-amber: #f5a623;
+  --color-royal: #5b7cfa;
+  --color-emerald: #34d399;
+  --color-purple: #a78bfa;
 
-  --font-display: "Fraunces", ui-serif, Georgia, serif;
-  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --color-risk-low: #34d399;
+  --color-risk-medium: #f5c344;
+  --color-risk-high: #f5934a;
+  --color-risk-critical: #f26666;
 
   --glass-bg: rgba(255, 255, 255, 0.035);
-  --glass-bg-hover: rgba(255, 255, 255, 0.06);
+  --glass-bg-hover: rgba(255, 255, 255, 0.065);
   --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
+
+  --bg-glow-1: radial-gradient(ellipse 60% 40% at 15% -10%, rgba(212, 175, 106, 0.10), transparent);
+  --bg-glow-2: radial-gradient(ellipse 50% 40% at 100% 0%, rgba(91, 124, 250, 0.07), transparent);
+}
+
+[data-theme="light"] {
+  --color-bg: #f6f5f2;
+  --color-bg-elevated: #ffffff;
+  --color-surface: #ffffff;
+  --color-border: rgba(20, 20, 25, 0.08);
+  --color-border-strong: rgba(20, 20, 25, 0.16);
+
+  --color-text: #16171c;
+  --color-text-muted: #62636c;
+  --color-text-faint: #9a9ba3;
+
+  --color-accent: #a8791f;
+  --color-accent-soft: rgba(168, 121, 31, 0.10);
+  --color-accent-strong: #8a6118;
+  --color-accent-contrast: #ffffff;
+
+  --color-amber: #b8710f;
+  --color-royal: #3357d8;
+  --color-emerald: #0f9d6e;
+  --color-purple: #7c4fe0;
+
+  --color-risk-low: #0f9d6e;
+  --color-risk-medium: #b8860b;
+  --color-risk-high: #c2691e;
+  --color-risk-critical: #d4453f;
+
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-bg-hover: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(20, 20, 25, 0.08);
+  --glass-shadow: 0 20px 60px -25px rgba(20, 20, 25, 0.18);
+
+  --bg-glow-1: radial-gradient(ellipse 60% 40% at 15% -10%, rgba(168, 121, 31, 0.08), transparent);
+  --bg-glow-2: radial-gradient(ellipse 50% 40% at 100% 0%, rgba(51, 87, 216, 0.05), transparent);
+}
+
+:root {
+  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 * {
@@ -47,21 +95,27 @@ body,
   height: 100%;
 }
 
+html {
+  color-scheme: dark;
+}
+[data-theme="light"] {
+  color-scheme: light;
+}
+
 body {
   margin: 0;
   background: var(--color-bg);
-  background-image:
-    radial-gradient(ellipse 60% 40% at 20% -10%, rgba(201, 163, 95, 0.08), transparent),
-    radial-gradient(ellipse 50% 40% at 100% 0%, rgba(120, 130, 200, 0.05), transparent);
+  background-image: var(--bg-glow-1), var(--bg-glow-2);
   background-attachment: fixed;
   color: var(--color-text);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 ::selection {
   background: var(--color-accent);
-  color: #0a0b0e;
+  color: var(--color-accent-contrast);
 }
 
 ::-webkit-scrollbar {
@@ -72,11 +126,8 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--color-border-strong);
   border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
 }
 
 .font-display {
@@ -91,6 +142,8 @@ body {
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--glass-shadow);
+  transition: background 0.25s ease, border-color 0.25s ease;
 }
 
 .glass-hover {
@@ -99,6 +152,27 @@ body {
 .glass-hover:hover {
   background: var(--glass-bg-hover);
   border-color: var(--color-border-strong);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-border) 25%,
+    var(--color-border-strong) 37%,
+    var(--color-border) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

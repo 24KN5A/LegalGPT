@@ -23,6 +23,34 @@ def _now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+class User(Base):
+    """A registered LegalGPT account.
+
+    `hashed_password` NEVER stores the plaintext password -- only a bcrypt
+    hash (see app/core/security.py). Rows live in the same SQLite database
+    as everything else (storage/legalgpt.db), in a `users` table.
+    """
+
+    __tablename__ = "users"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    email: Mapped[str] = mapped_column(String(320), unique=True, index=True, nullable=False)
+    full_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    is_active: Mapped[bool] = mapped_column(default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_now, onupdate=_now
+    )
+
+    documents: Mapped[list["Document"]] = relationship(
+        back_populates="owner", cascade="all, delete-orphan"
+    )
+    conversations: Mapped[list["Conversation"]] = relationship(
+        back_populates="owner", cascade="all, delete-orphan"
+    )
+
+
 class DocumentStatus(str, PyEnum):
     UPLOADED = "uploaded"
     PROCESSING = "processing"
@@ -34,6 +62,9 @@ class Document(Base):
     __tablename__ = "documents"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    user_id: Mapped[str | None] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=True
+    )
     filename: Mapped[str] = mapped_column(String(512), nullable=False)
     original_filename: Mapped[str] = mapped_column(String(512), nullable=False)
     content_type: Mapped[str] = mapped_column(String(128), default="application/pdf")
@@ -51,6 +82,7 @@ class Document(Base):
         DateTime(timezone=True), default=_now, onupdate=_now
     )
 
+    owner: Mapped["User | None"] = relationship(back_populates="documents")
     conversations: Mapped[list["Conversation"]] = relationship(
         back_populates="document", cascade="all, delete-orphan"
     )
@@ -60,6 +92,9 @@ class Conversation(Base):
     __tablename__ = "conversations"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    user_id: Mapped[str | None] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=True
+    )
     document_id: Mapped[str | None] = mapped_column(
         String(36), ForeignKey("documents.id", ondelete="CASCADE"), nullable=True
     )
@@ -69,6 +104,7 @@ class Conversation(Base):
         DateTime(timezone=True), default=_now, onupdate=_now
     )
 
+    owner: Mapped["User | None"] = relationship(back_populates="conversations")
     document: Mapped["Document | None"] = relationship(back_populates="conversations")
     messages: Mapped[list["Message"]] = relationship(
         back_populates="conversation",

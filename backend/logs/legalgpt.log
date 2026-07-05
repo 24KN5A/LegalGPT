@@ -2988,3 +2988,9 @@ sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) table documents has 
 2026-07-06 00:10:19.785 | INFO     | app.services.embedding_service:model:41 - Loading local embedding model 'all-MiniLM-L6-v2'...
 2026-07-06 00:10:26.192 | INFO     | app.services.embedding_service:model:43 - Local embedding model loaded.
 2026-07-06 00:10:26.949 | INFO     | app.services.document_service:process_document:109 - Document 528dcdef-d16b-4428-91f8-126c525e8db8 processed successfully (2 chunks).
+2026-07-06 00:53:53.817 | INFO     | app.main:lifespan:29 - Shutting down LegalGPT API.
+2026-07-06 00:53:59.940 | INFO     | app.main:lifespan:22 - Starting LegalGPT API v1.0.0 (development)
+2026-07-06 00:53:59.954 | INFO     | app.main:lifespan:25 - LLM provider: ollama | Embedding provider: local
+2026-07-06 01:06:52.919 | INFO     | app.main:lifespan:29 - Shutting down LegalGPT API.
+2026-07-06 01:06:56.084 | INFO     | app.main:lifespan:22 - Starting LegalGPT API v1.0.0 (development)
+2026-07-06 01:06:56.093 | INFO     | app.main:lifespan:25 - LLM provider: ollama | Embedding provider: local

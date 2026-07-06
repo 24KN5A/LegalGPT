@@ -18,8 +18,6 @@ def get_llm_provider() -> LLMProvider:
 
     if provider == "openai":
         from app.services.llm.openai_provider import OpenAIProvider
-    elif provider == "gemini":
-        return GeminiProvider()
 
         return OpenAIProvider(api_key=settings.openai_api_key, model=settings.openai_chat_model)
 
@@ -29,6 +27,11 @@ def get_llm_provider() -> LLMProvider:
         return AnthropicProvider(
             api_key=settings.anthropic_api_key, model=settings.anthropic_chat_model
         )
+
+    if provider == "gemini":
+        from app.services.llm.gemini_provider import GeminiProvider
+
+        return GeminiProvider(api_key=settings.gemini_api_key, model=settings.gemini_chat_model)
 
     # default: ollama (local, free, no API key)
     from app.services.llm.ollama_provider import OllamaProvider

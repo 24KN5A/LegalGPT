@@ -34,7 +34,6 @@ class Settings(BaseSettings):
         default_factory=lambda: [
             "http://localhost:5173",
             "http://127.0.0.1:5173",
-            "https://legal-gpt-sigma.vercel.app",
         ]
     )
 
@@ -53,15 +52,14 @@ class Settings(BaseSettings):
     chunk_overlap: int = 150
 
     # --- Embeddings (local, free, default) ---
-    embedding_provider: Literal["local", "openai", "gemini"] = "local"
+    embedding_provider: Literal["local", "openai"] = "local"
     embedding_model_name: str = "all-MiniLM-L6-v2"
     openai_embedding_model: str = "text-embedding-3-small"
-    gemini_embedding_model: str = "text-embedding-004"
 
     # --- LLM provider abstraction ---
-    # Supports "ollama" (local/free, default), "openai", "anthropic", and "gemini".
-    # Selecting openai/anthropic/gemini requires the matching API key below.
-    llm_provider: Literal["ollama", "openai", "anthropic", "gemini"] = "ollama"
+    # Supports "ollama" (local/free, default), "openai", and "anthropic".
+    # Selecting openai/anthropic requires the matching API key below.
+    llm_provider: Literal["ollama", "openai", "anthropic"] = "ollama"
 
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3"
@@ -71,9 +69,6 @@ class Settings(BaseSettings):
 
     anthropic_api_key: Optional[str] = None
     anthropic_chat_model: str = "claude-sonnet-4-6"
-
-    gemini_api_key: Optional[str] = None
-    gemini_chat_model: str = "gemini-2.0-flash"
 
     llm_temperature: float = 0.2
     llm_max_tokens: int = 1024
